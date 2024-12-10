@@ -1,0 +1,180 @@
+package View;
+
+import javax.swing.*;
+
+import Model.Employee.Poste;
+import Model.Employee.Role;
+
+import java.awt.*;
+import java.sql.*;
+
+public class EmployeeView extends JFrame {
+    private JTextField nomField = new JTextField(20);
+    private JTextField prenomField = new JTextField(20);
+    private JTextField emailField = new JTextField(20);
+    private JTextField phoneField = new JTextField(20);
+    private JTextField salaireField = new JTextField(20);
+
+    private JComboBox<Poste> posteComboBox = new JComboBox<>();
+    private JComboBox<Role> roleComboBox = new JComboBox<>();
+
+    public JButton ajouterButton = new JButton("Ajouter");
+
+    public EmployeeView() {
+        setLayout(new FlowLayout());
+        
+        add(new JLabel("Nom :"));
+        add(nomField);
+        add(new JLabel("Prénom :"));
+        add(prenomField);
+        add(new JLabel("Email :"));
+        add(emailField);
+        add(new JLabel("Phone :"));
+        add(phoneField);
+        add(new JLabel("Salaire :"));
+        add(salaireField);
+
+        
+        add(new JLabel("Poste :"));
+        add(posteComboBox);
+        add(new JLabel("Rôle :"));
+        add(roleComboBox);
+
+        
+        add(ajouterButton);
+
+      
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+       
+        chargerDonneesDepuisBDD();
+    }
+
+    private void chargerDonneesDepuisBDD() {
+        String url = "jdbc:mysql://localhost:3306/gestiondesemployees";
+        String utilisateur = "root";
+        String motDePasse = "";
+
+        try (Connection connection = DriverManager.getConnection(url, utilisateur, motDePasse)) {
+           
+            String query = "SELECT DISTINCT poste, role FROM employes";
+
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+
+               
+                while (rs.next()) {
+                    Poste poste = rs.getPoste("poste");
+                    Role role = rs.getRole("role");
+
+                    
+                    if (poste != null && !itemExisteDansComboBox(posteComboBox, poste)) {
+                        posteComboBox.addItem(poste);
+                    }
+
+                   
+                    if (role != null && !itemExisteDansComboBox(roleComboBox, role)) {
+                        roleComboBox.addItem(role);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            afficherMessageErreur("Erreur de connexion à la base de données : " + e.getMessage());
+        }
+    }
+
+    
+    private boolean itemExisteDansComboBox(JComboBox<Poste> posteComboBox2, Poste poste) {
+        for (int i = 0; i < posteComboBox2.getItemCount(); i++) {
+            if (posteComboBox2.getItemAt(i).equals(poste)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getNom() {
+        return nomField.getText();
+    }
+
+    public String getPrenom() {
+        return prenomField.getText();
+    }
+
+    public String getEmail() {
+        return emailField.getText();
+    }
+
+    public String getPhone() {
+        return phoneField.getText();
+    }
+
+    public String getSalaire() {
+        return salaireField.getText();
+    }
+
+    public String getPoste() {
+        return (String) posteComboBox.getSelectedItem();
+    }
+
+    public String getRole() {
+        return (String) roleComboBox.getSelectedItem();
+    }
+
+    
+    public void afficherMessageErreur(String message) {
+        JOptionPane.showMessageDialog(this, message, "Erreur", JOptionPane.ERROR_MESSAGE);
+    }
+
+    
+    public void afficherMessageSucces(String message) {
+        JOptionPane.showMessageDialog(this, message, "Succès", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    
+    public JButton getAjouterButton() {
+        return ajouterButton;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            EmployeeView view = new EmployeeView();
+            view.setVisible(true);
+
+            view.getAjouterButton().addActionListener(e -> {
+                String nom = view.getNom();
+                String prenom = view.getPrenom();
+                String email = view.getEmail();
+                String phone = view.getPhone();
+                String salaire = view.getSalaire();
+                String poste = view.getPoste();
+                String role = view.getRole();
+
+                
+                if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || phone.isEmpty() || salaire.isEmpty()) {
+                    view.afficherMessageErreur("Tous les champs doivent être remplis !");
+                } else {
+                    view.afficherMessageSucces("Employé ajouté : \n" +
+                            "Nom : " + nom + "\n" +
+                            "Prénom : " + prenom + "\n" +
+                            "Email : " + email + "\n" +
+                            "Phone : " + phone + "\n" +
+                            "Salaire : " + salaire + "\n" +
+                            "Poste : " + poste + "\n" +
+                            "Rôle : " + role);
+                }
+            });
+        });
+    }
+
+	public Role getSelectedRole() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Poste getSelectedPoste() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

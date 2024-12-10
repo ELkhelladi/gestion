@@ -1,0 +1,35 @@
+package TP;
+ class ERegulier extends Etudiant {
+	private double note;
+
+	public ERegulier() {
+		super();
+	}
+
+	public ERegulier(String nom, int annee, String section, double note) {
+		super(nom, annee, section);
+		this.note = note;
+	}
+
+	public double getNote() {
+		return note;
+	}
+
+	public void setNote(double note) {
+		this.note = note;
+	}
+	
+	@Override
+	/*public void afficher() {
+		System.out.println("Etudiant regulier : ");
+		super.afficher();
+		System.out.println("  Note : " + note);
+	}*/
+	
+	public String toString() {
+		System.out.println("Etudiant regulier : ");
+		return super.toString()+"  Note : " + note;
+		
+	}
+}
+

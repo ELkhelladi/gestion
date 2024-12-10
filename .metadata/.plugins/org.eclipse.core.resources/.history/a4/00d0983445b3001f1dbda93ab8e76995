@@ -1,0 +1,42 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import Model.Employee;
+
+public class EmployeeDAOimpl implements EmployeeDAOI {
+    private Connection connection;
+
+    public EmployeeDAOimpl() {
+        setConnection(DBConnection.getConnection());
+    }
+
+    @Override
+    public void add(Employee E) {
+        String Query = "INSERT INTO Employee(nom, prenom, email, telephone, salaire, role, poste) VALUES(?, ?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(Query)) { // Utilise la connexion déjà initialisée
+            stmt.setString(1, E.getNom());
+            stmt.setString(2, E.getPrenom());
+            stmt.setString(3, E.getEmail());
+            stmt.setString(4, E.getPhone());
+            stmt.setDouble(5, E.getSalaire());
+            stmt.setString(6, E.getRole().name());
+            stmt.setString(7, E.getPoste().name());
+            stmt.executeUpdate();
+            System.out.println("Employé ajouté avec succès !");
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout de l'employé !");
+            e.printStackTrace(); // Fournit plus de détails sur l'erreur
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+}

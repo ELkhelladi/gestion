@@ -1,0 +1,9 @@
+package avance;
+
+public class DBConnection {
+private static final String URL="jdbc:musql://ocalhost:3306/avance";
+private static final String USER = "root"; 
+private static final String PASSWORD = "";
+static Connection connection=null;
+if(c)
+}

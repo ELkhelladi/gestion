@@ -1,0 +1,49 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import Model.Employee;
+
+public class EmployeeDAOimpl implements EmployeeDAOI {
+    private Connection connection;
+
+    public EmployeeDAOimpl() {
+        setConnection(DBConnection.getConnection());
+    }
+
+    @Override
+    public void addEmployee(Employee employee) {
+        String sql = "INSERT INTO employes (nom, prenom, email, phone, salaire, role, poste) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            // Remplir les paramètres de la requête
+            stmt.setString(1, employee.getNom());
+            stmt.setString(2, employee.getPrenom());
+            stmt.setString(3, employee.getEmail());
+            stmt.setString(4, employee.getPhone());
+            stmt.setString(5, employee.getSalaire());
+            stmt.setString(6, employee.getRole().getRole()); // Utilise une méthode pour obtenir le nom du rôle
+            stmt.setString(7, employee.getPoste().getPoste()); // Utilise une méthode pour obtenir le nom du poste
+
+            
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Employé ajouté avec succès !");
+            } else {
+                System.out.println("Aucune ligne affectée. Vérifiez les données.");
+            }
+        } catch (SQLException e) {
+            
+            System.err.println("Erreur lors de l'insertion de l'employé : " + e.getMessage());
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+}

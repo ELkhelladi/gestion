@@ -1,6 +1,0 @@
-package DAO;
-
-import Model.Employee;
-public interface  EmployeeDAOI {
-public void addEmployee(Employee employee);
-}

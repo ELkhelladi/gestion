@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * 
- */
-module avance {
-	requires java.sql;
-}
